@@ -1,0 +1,864 @@
+Applet
+
+import java.applet.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.*;
+public class one extends Applet implements ActionListener{
+	String msg="";
+	public void init() {
+		Button b1=new Button("Ok");
+		Button b2=new Button("Cancel");
+		add(b1);
+		add(b2);
+		b1.addActionListener(this);
+		b2.addActionListener(this);
+	}
+	public void paint(Graphics g) {
+		g.drawString(msg,50,50);
+	}
+	public void actionPerformed(ActionEvent e) {
+		String action=e.getActionCommand();
+		if(action.equals("Ok"))
+		{msg="Ok button pressed";}
+	    if(action.equals("Cancel"))
+		{msg="Cancel button pressed";}
+		repaint();
+	}
+
+}
+
+
+
+==============
+
+
+
+import java.applet.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class AppletMouse extends Applet implements MouseListener, MouseMotionListener {
+    public String msg = "nothing is happening";
+    public int x  = 50;
+    public int y = 50;
+    public void init(){
+        addMouseMotionListener(this);
+        addMouseListener(this);
+    }
+    
+    public void mouseClicked(MouseEvent me){
+        msg = "you clicked the button " + me.getX() + " " +me.getY();
+        repaint();
+    }
+    
+    public void paint(Graphics g){
+        g.drawString(msg, x, y);
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent arg0) {
+        // TODO Auto-generated method stub
+        msg = "mouse is moving " + arg0.getX() + "   " + arg0.getY();
+       // showStatus(msg+arg0.getX()+arg0.getY());
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent arg0) {
+        // TODO Auto-generated method stub
+        msg = "the mouse just entered the area";
+        repaint();
+        
+    }
+
+    @Override
+    public void mouseExited(MouseEvent arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void mousePressed(MouseEvent arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent arg0) {
+        // TODO Auto-generated method stub      
+    }
+
+}
+--------------------------------------------------------------------------
+Cookies
+
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		for(int i=0; i<3; i++) {
+		      Cookie cookie = 
+		        new Cookie("Session-Cookie-" + i,
+		                   "Cookie-Value-S" + i);
+		      // No maxAge (ie maxAge = -1)
+		     // out.println(" ");
+		      response.addCookie(cookie);
+		      cookie = new Cookie("Persistent-Cookie-" + i,
+		                          "Cookie-Value-P" + i);
+		     // out.println(" ");
+		      cookie.setMaxAge(3);
+		      response.addCookie(cookie);}
+	    Cookie[] cookies = request.getCookies();
+	    if (cookies == null) {
+	      out.println("<TR><TH COLSPAN=2>No cookies");
+	    } else {
+	      Cookie cookie;
+	      for(int i=0; i<cookies.length; i++) {
+	        cookie = cookies[i];
+	        out.println
+	          ("<TR>\n" +
+	           "  <TD>" + cookie.getName() + "\n" +"<br>"+
+	           "  <TD>" + cookie.getValue());
+	      }
+	    }
+
+	}
+	
+============
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+	     //creation of a cookie named:user1
+
+			Cookie userCookie=new Cookie("user1","uid1234");
+			response.addCookie(userCookie);
+
+			response.setContentType("text/html");
+			 PrintWriter out=response.getWriter();
+			 out.println("<html>");
+
+			 out.println("<body>");
+
+			 //accessing details of the cookie
+
+			 String name=userCookie.getName();
+			 String value=userCookie.getValue();
+			 out.println("<p>Cookie name="+name+"</p>");
+			 out.println("<p>value="+value+"</p>");
+
+			 out.println("</body>");
+			 out.println("</html>");
+			 out.close();
+	}
+	
+---------------------------------------------------------------
+Cookie Advance
+
+index.html
+
+<body>
+<h1>Login App using HTTPSESSION</h1>
+<a href="login.html">Login</a>
+<a href="LogoutServlet">Logout</a>
+<a href="ProfileServlet">Profile</a>
+</body>
+=====================
+link.html
+
+<body>
+<a href="login.html">Login</a>
+<a href="LogoutServlet">Logout</a>
+<a href="ProfileServlet">Profile</a>
+</body>
+================================
+login.html
+
+<form action="LoginServlet" method="post">
+Name:<input type="text" name="name"><br>
+Password:<input type="password" name="pass"><br>
+<input type="submit" value="submit">
+</form>
+====================================
+LoginServlet.java
+
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+		doGet(request, response);
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		request.getRequestDispatcher("link.html").include(request, response);
+		String name=request.getParameter("name");
+		String pass=request.getParameter("pass");
+		if(pass.equals("admin")) {
+			out.println("welcome "+name);
+			Cookie ck=new Cookie("name",name);
+		}else {
+			out.println("Error Invalid Password");
+			request.getRequestDispatcher("login.html").include(request, response);
+		}
+		out.close();
+	}
+	
+LogoutServlet.java
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		request.getRequestDispatcher("login.html").include(request, response);
+		Cookie ck=new Cookie("name","");
+		ck.setMaxAge(0);
+		out.print("you are sucessfully logged out");
+		out.close();
+	}
+==================================	
+ProfileServlet.java
+
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		request.getRequestDispatcher("link.html").include(request, response);
+		Cookie ck[]=request.getCookies();
+		
+		if(ck!=null) {
+			String name=ck[0].getValue();
+		if(!name.equals("")||name!=null) {
+			out.println("Hello ,"+name+"welcome to Profile");
+		}
+		else {
+			out.println("Please login first");
+			request.getRequestDispatcher("login.html").include(request, response);
+		}
+		out.close();}
+	}
+-----------------------------------------------------------
+Jsp
+
+first.jsp
+
+<form action="process1.jsp">
+Name:<input type="text" name="name">
+Password:<input type="password" name="pass">
+<input type="submit" value="Submit"></form>
+============================
+process1.jsp
+
+<body>
+<%@ page import = "javax.servlet.RequestDispatcher" %>
+<%
+String msg="Hi there";
+RequestDispatcher rd=request.getRequestDispatcher("index.jsp");
+request.setAttribute("mess",msg);
+rd.forward(request,response);
+%>
+</body>
+===============================
+index.jsp
+
+<body>
+<%
+String message=(String)request.getAttribute("mess");
+out.print(message);
+%>
+</body>
+-------------------------------------------------------------------
+Jsp Jdbc
+
+
+<body>
+<%@page import="java.sql.*" %>
+<%@page import="java.io.*" %>
+<% 
+try{
+	Class.forName("com.mysql.jdbc.Driver");
+	Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb","root","");
+	Statement st=con.createStatement();
+	ResultSet rs=st.executeQuery("select * from student");
+	
+	while(rs.next()){
+		String f1=rs.getString("usn"),f2=rs.getString("name");
+		out.println(f1+" "+f2);
+	}out.print("bye");
+	out.close();
+	con.close();
+
+}catch(SQLException e){}
+
+%>
+</body>
+
+-----------------------------------------------------------------
+session
+
+
+sessioninfo.java
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+
+		response.setContentType("text/html");
+		PrintWriter pw=response.getWriter();
+		HttpSession session=request.getSession(true);
+
+
+		pw.println("<h1>Welcome to a new Session</h1>");
+		pw.println("<p>Session ID: "+session.getId()+"</p>");
+		pw.println("<p>Creation Time for this Session: "+ new Date(session.getCreationTime())+"</p>");
+	    pw.println("<p>Last Access Time for this Session: "+ new Date(session.getLastAccessedTime())+"</p>");
+		pw.close();
+	}
+-----------------------------------------------------------------
+session advance
+
+index.html
+
+<body>
+<h1>Login App using HTTPSESSION</h1>
+<a href="login.html">Login</a>
+<a href="LogoutServlet">Logout</a>
+<a href="ProfileServlet">Profile</a>
+</body>
+===========================
+link.html
+
+<body>
+<a href="login.html">Login</a>
+<a href="LogoutServlet">Logout</a>
+<a href="ProfileServlet">Profile</a>
+</body>
+============================
+login.html
+
+<form action="LoginServlet" method="post">
+NAme:<input type="text" name="name"><br>
+Password:<input type="password" name="pass"><br>
+<input type="submit" value="submit">
+</form>
+================================
+LoginServlet
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		request.getRequestDispatcher("link.html").include(request, response);
+		String name=request.getParameter("name");
+		String pass=request.getParameter("pass");
+		if(pass.equals("admin")) {
+			out.println("welcome "+name);
+			HttpSession session=request.getSession();
+			session.setAttribute("name", name);
+		}else {
+			out.println("Error Invalid Password");
+			request.getRequestDispatcher("login.html").include(request, response);
+		}
+		out.close();
+	}
+=====================================
+LogoutServlet
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		request.getRequestDispatcher("login.html").include(request, response);
+		HttpSession session=request.getSession();
+		session.invalidate();
+		out.print("you are sucessfully logged out");
+		out.close();
+	}
+==========================================
+
+	ProfileServlet
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		request.getRequestDispatcher("link.html").include(request, response);
+		HttpSession session=request.getSession(false);
+
+		if(session!=null) {
+			String name=(String) session.getAttribute("name");
+			out.println("Hello ,"+name+"welcome to Profile");
+		}else {
+			out.println("Please login first");
+			request.getRequestDispatcher("login.html").include(request, response);
+		}
+		out.close();
+	}
+------------------------------------------------------------------------
+
+Servlet advance
+
+
+
+=================================================
+prepared Statement
+
+import java.sql.*;
+import java.io.*;
+class JavaTHird{
+public static void main(String args[])throws Exception{
+System.out.println("MySQL Connect Example.");
+Connection conn = null;
+String url = "jdbc:mysql://localhost:3306/";
+String dbName = "mydb";
+String driver = "com.mysql.jdbc.Driver";
+String userName = "root";
+String password = "";
+Class.forName(driver).newInstance();
+conn = DriverManager.getConnection(url+dbName,userName,password);
+System.out.println("Connected to the database");
+String myusn,myname;
+PreparedStatement ps=conn.prepareStatement("insert into student values(?,?)");
+Statement stmt = conn.createStatement();
+BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+do{
+//int id=Integer.parseInt(br.readLine());
+//float salary=Float.parseFloat(br.readLine());
+//ps.setFloat(2, salary);
+System.out.println("enter usn:");
+myusn=br.readLine();
+System.out.println("enter name:");
+myname=br.readLine();
+ps.setString(1,myusn);
+ps.setString(2,myname);
+int i=ps.executeUpdate();
+System.out.println(i+" records added");
+System.out.println("Do you want to continue: y/n");
+String s=br.readLine();
+if(s.startsWith("n")){
+break;
+}
+}while(true);
+String sql = "SELECT * from student";
+ResultSet rs = stmt.executeQuery(sql);
+System.out.println("The records are :");
+while (rs.next())
+{
+myusn = rs.getString(1);
+myname=rs.getString(2);
+System.out.println(rs.getRow()+"-"+myusn+" "+myname);
+} //end while
+conn.close();
+}}
+============================================
+---------------------------------------------------------------
+Dispatcher
+
+
+login.html
+
+<form action="Validate1" method="post">
+name:<input type="text" name="user">
+pass:<input type="password" name="pass" >
+<input type="submit" value="Submit">
+</form>
+=========
+
+Validate1
+
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		PrintWriter out=response.getWriter();
+		response.setContentType("text/html");
+		try {
+			String name=request.getParameter("user");
+			String pass=request.getParameter("pass");
+			if(pass.equals("msrit")) {
+				RequestDispatcher rd=request.getRequestDispatcher("Wel");
+				rd.forward(request, response);
+			}else
+			{out.println("<font color='red'><b>You have entered incorrect password</b></font>");
+			RequestDispatcher rd=request.getRequestDispatcher("login.html");
+			rd.include(request, response);}
+		out.close();
+		}catch(Exception e) {;}
+	}
+===========
+Wel
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+		PrintWriter out=response.getWriter();
+		
+		try {
+			out.println("welcome user");
+		}finally {
+			out.close();
+		}
+	}
+------------------------------------------------------------------
+Session  basic
+
+hello.html
+
+<form action="HelloServlet" method="get">
+enter name:<input type="text" name="user">
+<input type="submit" name="Submit">
+</form>
+
+=========
+HelloServlet
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+		PrintWriter out=response.getWriter();
+		response.setContentType("text/html");
+		String name=request.getParameter("user");
+		out.println("<html><body>"+"<h1>Hello User "+name+"</h1>");
+	}
+=============================================================
+colour.html
+
+<form action="ColourServlet" method="get">
+<div>Colour<select name="color">
+<option value="red">Red</option>
+<option value="green">Green</option>
+<option value="blue">Blue</option>
+</select><input type="submit" value="submit"></div>
+</form>
+
+=================
+ColourServlet
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		PrintWriter out=response.getWriter();
+		response.setContentType("text/html");
+		String color=request.getParameter("color");
+		out.println(color);
+		if(color.equals("red")) {
+			out.println("<body bgcolor=#FF0000>");
+		}else if(color.equals("green")) {
+			out.println("<body bgcolor=#008000>");
+		}else {
+			out.println("<body bgcolor=#00FFFF>");
+		}
+		
+	}
+------------------------------------------------------------
+Jdbc
+
+JdbcFirst
+
+import java.sql.*;
+import java.sql.Connection;
+
+public class JdbcFirst {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Connection con= null;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			con=DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb1","root","");
+			if(!con.isClosed()) {
+				System.out.println("Connected");
+			}
+		}
+		catch(Exception e) {System.out.println("error"+e);}
+finally {
+	try {
+		if (con!=null)
+			con.close();
+	}catch(Exception e1) {System.out.println("error"+e1);}
+}
+	}
+
+}
+==================================
+JdbcS
+
+import java.sql.*;
+
+public class JdbcS {
+	public static void main(String[] args) 
+	{
+		Connection con=null;
+		String f1,f2;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			con=DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb1","root","");
+			System.out.println("Connected");
+			Statement st=con.createStatement();
+			String sql="select * from myguests";
+			ResultSet rs=st.executeQuery(sql);
+			while(rs.next()){
+				f1=rs.getString(1);
+				f2=rs.getString(2);
+				System.out.println(f1+" "+f2);
+			}con.close();
+			System.out.println("Disconnected");
+		}catch(Exception e) {System.out.println("Error "+e);}
+		
+		
+	}
+	
+}
+==========================================
+Jdbc connection
+
+
+JavaTHird
+
+import java.sql.*;
+import java.io.*;
+class JavaTHird{
+public static void main(String args[])throws Exception{
+System.out.println("MySQL Connect Example.");
+Connection conn = null;
+String url = "jdbc:mysql://localhost:3306/";
+String dbName = "mydb";
+String driver = "com.mysql.jdbc.Driver";
+String userName = "root";
+String password = "";
+Class.forName(driver).newInstance();
+conn = DriverManager.getConnection(url+dbName,userName,password);
+System.out.println("Connected to the database");
+String myusn,myname;
+PreparedStatement ps=conn.prepareStatement("insert into student values(?,?)");
+Statement stmt = conn.createStatement();
+BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+do{
+//int id=Integer.parseInt(br.readLine());
+//float salary=Float.parseFloat(br.readLine());
+//ps.setFloat(2, salary);
+System.out.println("enter usn:");
+myusn=br.readLine();
+System.out.println("enter name:");
+myname=br.readLine();
+ps.setString(1,myusn);
+ps.setString(2,myname);
+int i=ps.executeUpdate();
+System.out.println(i+" records added");
+System.out.println("Do you want to continue: y/n");
+String s=br.readLine();
+if(s.startsWith("n")){
+break;
+}
+}while(true);
+String sql = "SELECT * from student";
+ResultSet rs = stmt.executeQuery(sql);
+System.out.println("The records are :");
+while (rs.next())
+{
+myusn = rs.getString(1);
+myname=rs.getString(2);
+System.out.println(rs.getRow()+"-"+myusn+" "+myname);
+} //end while
+conn.close();
+}}
+==============================================================
+JDBCServlet
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		PrintWriter out=response.getWriter();
+		response.setContentType("text/html");
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb","root","");
+			Statement st=con.createStatement();
+			String sql="select * from student";
+			ResultSet rs=st.executeQuery(sql);
+			out.println("<html><body>"+"<p>Mysql Connected</p>");
+			String f1,f2;
+			while(rs.next()) {
+				f1=rs.getString(1);
+				f2=rs.getString(2);
+				System.out.println(f1+" "+f2);
+				out.println("<h1>Welcome Student<h1>"+f1+" "+f2);
+			}
+		}
+		catch(Exception e){System.out.println("Error "+e);
+			
+		}finally {
+			out.close();
+		}	
+	}
+
+-----------------------------------------------------------------
+Thread
+
+public class Thread1 {
+		public static void main(String s[])
+		{
+		Thread t=Thread.currentThread();
+		System.out.println("Current Thread:"+t);
+		//Change name of the thread
+		t.setName("My thread");
+		 System.out.println("After name change:"+t);
+		try
+		{
+		     for(int n=5;n>0;n--)
+		     {
+		         System.out.println(n);
+		         Thread.sleep(1000);
+		      }
+		}
+		catch(Exception e)
+		{
+		 System.out.println("Exception");
+		}
+		}}
+=============================================================
+multithreading
+
+
+public class Thread2 extends Thread {
+public void run() {
+	System.out.println("r1");
+	try {
+		Thread.sleep(500);
+	}catch(InterruptedException e) {;}
+	System.out.println("r2");
+}
+public static void main(String args) {
+	Thread2 t1=new Thread2();
+	Thread2 t2=new Thread2();
+	t1.start();
+	t2.start();
+	System.out.println(t1.isAlive());
+	System.out.println(t2.isAlive());
+}
+}
+====================
+multithreading random
+
+
+class A extends Thread
+{
+   public void run()
+  {
+      for(int i=1;i<=5;i++)
+       {
+      System.out.println("\t From ThreadA: i= "+i);
+       }  
+         System.out.println("Exit from A");
+         }
+}
+
+class B extends Thread
+{
+     public void run()
+       {
+
+       for(int j=1;j<=5;j++)
+       {
+      System.out.println("\t From ThreadB: j= "+j);
+        }
+        System.out.println("Exit from B");
+         }
+}
+class C extends Thread
+{
+       public void run()
+         {
+
+for(int k=1;k<=5;k++)
+ {
+    System.out.println("\t From ThreadC: k= "+k);
+                }
+
+       System.out.println("Exit from C");
+         } }
+
+class Multithreading1
+{
+  public static void main(String args[])
+
+           {
+                    new A().start();
+                    new B().start();
+                    new C().start();
+
+           }  }
+===================================
+ThreadPriority
+
+
+
+class A1 extends Thread
+{
+public void run()
+ {
+System.out.println("Thread A started");
+
+              for(int i=1;i<=4;i++)
+                {
+ System.out.println("\t From ThreadA: i= "+i);
+                }
+
+                 System.out.println("Exit from A");
+         }}
+
+class B1 extends Thread
+{
+       public void run()
+         {
+              System.out.println("Thread B started");
+
+              for(int j=1;j<=4;j++)
+                {
+                      System.out.println("\t From ThreadB: j= "+j);
+                }
+
+                 System.out.println("Exit from B");
+         }
+}
+class C1 extends Thread
+{
+       public void run()
+         {
+              System.out.println("Thread C started");
+
+              for(int k=1;k<=4;k++)
+                {
+                      System.out.println("\t From ThreadC: k= "+k);
+                }
+                 System.out.println("Exit from C");
+         }}
+class ThreadPriority
+{
+          public static void main(String args[])
+           {
+                      A1 threadA=new A1();
+                      B1 threadB=new B1();
+                      C1 threadC=new C1();
+
+                    threadC.setPriority(Thread.MAX_PRIORITY);
+                    threadB.setPriority(threadA.getPriority()+1);
+                    threadA.setPriority(Thread.MIN_PRIORITY);
+
+                    System.out.println("Started Thread A");
+                     threadA.start();
+
+                    System.out.println("Started Thread B");
+                     threadB.start();
+
+                    System.out.println("Started Thread C");
+                     threadC.start();
+
+                     System.out.println("End of main thread");
+           }}
+
+
